@@ -117,7 +117,115 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   return newRequire;
-})({"src/CustomMap.ts":[function(require,module,exports) {
+})({"src/faker/faker.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.fakerCatchPhrase = exports.fakerCompanyName = exports.fakerLongitude = exports.fakerLatitude = exports.fakerUserName = void 0;
+
+function fakerUserName() {
+  var arrayNames = ['Jo', 'Kim', 'Lora', 'Jack', 'Paul', 'Phill', 'Alex', 'Mike', 'Tom'];
+  var rand = Math.random() * arrayNames.length;
+  return arrayNames[Math.floor(rand)];
+}
+
+exports.fakerUserName = fakerUserName;
+
+function fakerLatitude() {
+  var arrayNames = [24.0025, 167.0043, 198.8043];
+  var rand = Math.random() * arrayNames.length;
+  return arrayNames[Math.floor(rand)];
+}
+
+exports.fakerLatitude = fakerLatitude;
+
+function fakerLongitude() {
+  var arrayNames = [311.0034, 12.0053, 534.2405];
+  var rand = Math.random() * arrayNames.length;
+  return arrayNames[Math.floor(rand)];
+}
+
+exports.fakerLongitude = fakerLongitude;
+
+function fakerCompanyName() {
+  var arrayNames = ['Apple', 'Tesla', 'Xiaomi', 'Nike', 'Microsoft'];
+  var rand = Math.random() * arrayNames.length;
+  return arrayNames[Math.floor(rand)];
+}
+
+exports.fakerCompanyName = fakerCompanyName;
+
+function fakerCatchPhrase() {
+  var arrayNames = ['LAskdap[sdasd asd a sd...', 'Laasd asda das d!!!', 'Kkokpko k ko kokokkoko kokko ad!'];
+  var rand = Math.random() * arrayNames.length;
+  return arrayNames[Math.floor(rand)];
+}
+
+exports.fakerCatchPhrase = fakerCatchPhrase;
+},{}],"src/User.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.User = void 0;
+
+var faker_1 = require("./faker/faker");
+
+var User =
+/** @class */
+function () {
+  function User() {
+    this.color = 'black';
+    this.name = (0, faker_1.fakerUserName)();
+    this.location = {
+      lat: (0, faker_1.fakerLatitude)(),
+      lng: (0, faker_1.fakerLongitude)()
+    };
+  }
+
+  User.prototype.markerContent = function () {
+    return "\n        <div>\n            <h1>User Name: ".concat(this.name, "</h1>\n        </div>");
+  };
+
+  return User;
+}();
+
+exports.User = User;
+},{"./faker/faker":"src/faker/faker.ts"}],"src/Company.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Company = void 0;
+
+var faker_1 = require("./faker/faker");
+
+var Company =
+/** @class */
+function () {
+  function Company() {
+    this.color = 'white';
+    this.companyName = (0, faker_1.fakerCompanyName)();
+    this.catchPhrase = (0, faker_1.fakerCatchPhrase)();
+    this.location = {
+      lat: (0, faker_1.fakerLatitude)(),
+      lng: (0, faker_1.fakerLongitude)()
+    };
+  }
+
+  Company.prototype.markerContent = function () {
+    return "\n        <div>\n            <h1>Company Name: ".concat(this.companyName, "</h1>, \n            <h3>Company CatchPhrase: ").concat(this.catchPhrase, "</h3>\n        </div>\n            ");
+  };
+
+  return Company;
+}();
+
+exports.Company = Company;
+},{"./faker/faker":"src/faker/faker.ts"}],"src/CustomMap.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -138,6 +246,24 @@ function () {
     });
   }
 
+  CustomMap.prototype.addMarker = function (mappable) {
+    var _this = this;
+
+    var marker = new google.maps.Marker({
+      map: this.googleMap,
+      position: {
+        lat: mappable.location.lat,
+        lng: mappable.location.lng
+      }
+    });
+    marker.addListener('click', function () {
+      var infoWindow = new google.maps.InfoWindow({
+        content: mappable.markerContent()
+      });
+      infoWindow.open(_this.googleMap, marker);
+    });
+  };
+
   return CustomMap;
 }();
 
@@ -147,13 +273,20 @@ exports.CustomMap = CustomMap;
 
 Object.defineProperty(exports, "__esModule", {
   value: true
-}); // import { User } from './User';
-// import { Company } from './Company';
+});
+
+var User_1 = require("./User");
+
+var Company_1 = require("./Company");
 
 var CustomMap_1 = require("./CustomMap");
 
-new CustomMap_1.CustomMap('map');
-},{"./CustomMap":"src/CustomMap.ts"}],"../../../../../usr/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+var user = new User_1.User();
+var company = new Company_1.Company();
+var customMap = new CustomMap_1.CustomMap('map');
+customMap.addMarker(user);
+customMap.addMarker(company);
+},{"./User":"src/User.ts","./Company":"src/Company.ts","./CustomMap":"src/CustomMap.ts"}],"../../../../../usr/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -181,7 +314,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "41655" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "45013" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
